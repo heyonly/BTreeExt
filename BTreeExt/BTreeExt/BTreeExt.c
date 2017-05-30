@@ -9,6 +9,7 @@
 #include "BTreeExt.h"
 #include <stdlib.h>
 #include <string.h>
+ #include <assert.h>
 
 static inline char* CopyStr(const char* str){
     char* tPath = malloc(sizeof(char) * strlen(str) + 1);
@@ -25,6 +26,10 @@ static int BTreeExt_Insert_P(BTNodeExt** pNode,const char* parrentPath,const cha
 static BTNodeExt* BTreeExt_Search_P(BTNodeExt* tree,const char* parrentPath,const char* path);
 static BTNodeExt* BTreeExtLeafNode_Search(BTNodeExt* pNode,const char* path);
 static BTNodeExt* BTreeExtLeafNode_Insert(BTNodeExt** pNode,TOptorBWItem* item);
+
+static int BTreeExt_Destroy_P(BTNodeExt **tree);
+
+static int BTreeExtLeafNode_Destroy(LeafNode** pNode);
 
 static const char* rootPath = NULL;
 BTNodeExt* BTreeExt_Init(const char* root,unsigned int flags) {
@@ -47,6 +52,7 @@ static BTNodeExt* BTreeExt_Create(const TOptorBWItem* item) {
     node->childNode = NULL;
     node->parrent = node;
     node->next = NULL;
+    node->pre = NULL;
     return  node;
 }
 int BTreeExt_Insert(BTNodeExt** tree,const TOptorBWItem* item) {
@@ -95,20 +101,20 @@ static int BTreeExt_Insert_P(BTNodeExt** pNode,const char* parrentPath,const cha
     strcpy(item.name, sPath);
     
     BTNodeExt* tNode = BTreeExtLeafNode_Insert(&(parrent->childNode), &item);
-    tNode->parrent = *pNode;
+    tNode->parrent = parrent;
     
     return BTreeExt_Insert_P(&tNode, sPath, subPath, flags);
 }
-BTNodeExt** BTreeExt_Search(BTNodeExt** tree,const char *path) {
-    if (NULL == tree || NULL == *tree) {
+BTNodeExt* BTreeExt_Search(BTNodeExt* tree,const char *path) {
+    if (NULL == tree) {
         return NULL;
     }
-    BTNodeExt** node = tree;
+    BTNodeExt* node = tree;
     if (0 == strcmp(rootPath, path)) {
         return node;
     }
     if (0 == strncmp(path, rootPath, strlen(rootPath))) {
-        *node = BTreeExt_Search_P(*tree, rootPath, path);
+        node = BTreeExt_Search_P(tree, rootPath, path);
         path = path + strlen(rootPath);
     }
     char* parrentPath = CopyStr(rootPath);
@@ -116,10 +122,10 @@ BTNodeExt** BTreeExt_Search(BTNodeExt** tree,const char *path) {
     const char* subPath;
     //path = "/User/heyOnly/test" subPath = heyOnly/test,sPath = User
     subPath = separatorSubPath(path, &sPath);
-    while (subPath) {
-        *node = BTreeExt_Search_P(*node,sPath,parrentPath);
+    while (sPath) {
+        node = BTreeExt_Search_P(node,parrentPath,sPath);
         memset(parrentPath, 0, strlen(parrentPath));
-        parrentPath = CopyStr(parrentPath);
+        strcpy(parrentPath, sPath);
         subPath = separatorSubPath(subPath, &sPath);
     }
     if (parrentPath != NULL) {
@@ -135,10 +141,10 @@ static BTNodeExt* BTreeExt_Search_P(BTNodeExt* tree,const char* parrentPath,cons
     if (strlen(parrentPath) != strlen(tree->item->name)) {
         return NULL;
     }
-    if (0 == strcmp(path, rootPath)) {
+    if (0 == strncmp(path, rootPath,strlen(rootPath))) {
         return tree;
     }
-    if (0 == memcmp(parrentPath, tree->item->name, strlen(path))) {
+    if (0 == memcmp(parrentPath, tree->item->name, strlen(parrentPath))) {
         BTNodeExt* childNode = BTreeExtLeafNode_Search(tree->childNode, path);
         return childNode;
     }
@@ -179,17 +185,77 @@ static BTNodeExt* BTreeExtLeafNode_Insert(BTNodeExt** pNode,TOptorBWItem* item) 
         node = node->next;
     }
     node->next = BTreeExt_Create(item);
+    node->next->pre = node;
     node->next->parrent = node->parrent;
     return node->next;
 }
+int BTreeExt_Destroy(BTNodeExt **tree){
+    if (NULL == tree || NULL == *tree) {
+        return -1;
+    }
+    BTreeExt_Destroy_P(&(*tree)->childNode);
+    if (NULL == (*tree)->pre) {
+        (*tree)->parrent->childNode = (*tree)->next;
+        free((*tree));
+        (*tree) = NULL;
+        return 0;
+    }
+    (*tree)->pre->next = (*tree)->next;
+    if (NULL != (*tree)->next) {
+        (*tree)->next->pre = (*tree)->pre;
+    }
+    
+    free((*tree));
+    *tree = NULL;
+    return 0;
+}
 
-int BTreeExt_Destroy(BTNodeExt **tree) {
+static int BTreeExt_Destroy_P(BTNodeExt **tree) {
+    if (NULL == tree || NULL == *tree) {
+        return -1;
+    }
+//    (*tree)->parrent->childNode = (*tree)->next;
+    BTreeExt_Destroy_P(&((*tree)->childNode));
+    BTNodeExt* pNode = *tree;
+
+
+    while (pNode) {
+        pNode = pNode->next;
+        free((void*)pNode);
+        pNode = NULL;
+    }
+    free((*tree));
+    *tree = NULL;
     
     return 0;
 }
+
+void printBTree(BTNodeExt* tree) {
+    if (NULL == tree) {
+        return;
+    }
+    BTNodeExt *hNode = tree;
+    while (hNode) {
+        printf("%s\n",hNode->item->name);
+        printBTree(hNode->childNode);
+        hNode = hNode->next;
+        
+    }
+    
+   
+}
+
 static int BTreeExtLeafNode_Destroy(LeafNode** pNode) {
     if (NULL == pNode || NULL == *pNode) {
         return 0;
+    }
+    LeafNode* node = (*pNode)->next;
+    free((*pNode));
+    *pNode = NULL;
+    while (node) {
+        node = node->next;
+        free(node);
+        node = NULL;
     }
     
     return 0;

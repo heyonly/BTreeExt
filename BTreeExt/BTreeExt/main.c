@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "BTreeExt.h"
+#include "LinkTable.h"
 #define Directory "/Users/uusafe/test"
 
 int main(int argc, const char * argv[]) {
@@ -30,5 +31,17 @@ int main(int argc, const char * argv[]) {
     for (int i = 0; i < sizeof(item)/sizeof(item[0]); i++) {
         BTreeExt_Insert(&treeExt, &item[i]);
     }
+//    BTNodeExt *tree = BTreeExt_Search(treeExt, "/Users/uusafe/test/test1");
+//    BTreeExt_Destroy(&tree);
+    
+    
+//    LinkNode* node = initLinkNode(0);
+//    for (int i = 1; i < 10; i++) {
+//        addNodeToEnd(&node, i);
+//    }
+//    printNode(node);
+//    destroyLinkNode(&node);
+//    printNode(node);
+    printBTree(treeExt);
     return 0;
 }

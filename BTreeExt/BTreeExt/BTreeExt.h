@@ -25,11 +25,13 @@ typedef struct BTNodeExt {
     struct BTNodeExt* parrent;
     struct BTNodeExt* childNode;
     struct BTNodeExt* next;
+    struct BTNodeExt* pre;
 }BTNodeExt;
 BTNodeExt* BTreeExt_Init(const char* root,unsigned int flags);
 int BTreeExt_Insert(BTNodeExt** tree,const TOptorBWItem* item);
 
 int BTreeExt_Destroy(BTNodeExt **tree);
 void BTreeExt_Remove(BTNodeExt** tree,const char* path);
-BTNodeExt** BTreeExt_Search(BTNodeExt** tree,const char *path);
+BTNodeExt* BTreeExt_Search(BTNodeExt* tree,const char *path);
+void printBTree(BTNodeExt* tree);
 #endif /* BTreeExtExt_h */
