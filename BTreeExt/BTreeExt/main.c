@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include "BTreeExt.h"
 #include "LinkTable.h"
+#include <stdlib.h>
+
 #define Directory "/Users/uusafe/test"
 
 int main(int argc, const char * argv[]) {
@@ -43,5 +45,13 @@ int main(int argc, const char * argv[]) {
 //    destroyLinkNode(&node);
 //    printNode(node);
     printBTree(treeExt);
+    
+    char a[16] = "abcd";
+    printf("%ld\n",sizeof(a));
+    printf("%ld\n",strlen((const char*)a));
+    char* path = malloc(sizeof(char) * (strlen(a) + 2));
+    printf("%ld\n",sizeof(path));
+    printf("%ld\n",strlen(path));
+    
     return 0;
 }

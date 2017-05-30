@@ -234,13 +234,27 @@ void printBTree(BTNodeExt* tree) {
     if (NULL == tree) {
         return;
     }
+    char *parrentPath = malloc(sizeof(char)* strlen(tree->parrent->item->name));
+    memset(parrentPath, 0, strlen(tree->parrent->item->name));
+    strcpy(parrentPath, tree->parrent->item->name);
+    
     BTNodeExt *hNode = tree;
     while (hNode) {
-        printf("%s\n",hNode->item->name);
+        unsigned long len= strlen(hNode->parrent->item->name) + strlen(hNode->item->name) + 2;
+        char *aPath = malloc(sizeof(char) * len);
+        memset((void*)aPath, 0, len);
+        strcpy(aPath, parrentPath);
+        strcat(aPath, "/");
+        strcat(aPath, hNode->item->name);
+        printf("%s\n",aPath);
         printBTree(hNode->childNode);
         hNode = hNode->next;
+        free(aPath);
+        aPath = NULL;
         
     }
+    free(parrentPath);
+    parrentPath = NULL;
     
    
 }
