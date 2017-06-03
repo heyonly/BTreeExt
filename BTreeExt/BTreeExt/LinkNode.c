@@ -6,58 +6,38 @@
 //  Copyright © 2017 HeyOnly. All rights reserved.
 //
 
-#include "LinkTable.h"
+#include "LinkNode.h"
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
-LinkNode* initLinkNode(int flags) {
+LinkNode* initLinkNode(const char* name) {
     LinkNode* node = malloc(sizeof(LinkNode));
     void* ret = memset(node,0,(unsigned long)sizeof(LinkNode));
+    node->name = malloc(sizeof(char) * (strlen(name) + 1));
+    memset((void*)node->name, 0, strlen(name) + 1);
     assert(ret);
     node->next = NULL;
-    node->flags = flags;
+    strcpy(node->name, name);
     return node;
 }
 
-int addNodeToEnd(LinkNode** pNode,int flags) {
+int addNodeToHead(LinkNode** pNode,const char* name) {
     if (NULL == pNode || NULL == *pNode) {
         return -1;
     }
-    LinkNode* newNode = initLinkNode(flags);
-    LinkNode* node = *pNode;
-    if (NULL == node->next) {
-        node->next = newNode;
-        return 0;
-    }
-    while (node->next) {
-        node = node->next;
-    }
-    node->next = newNode;
+    LinkNode* newNode = initLinkNode(name);
+    newNode->next = *pNode;
+    *pNode = newNode;
     return 0;
 }
 
-int insertNode(LinkNode** pNode,int flags,int position) {
-    if (NULL == pNode || NULL == *pNode) {
-        return -1;
-    }
-    int pos = 0;
-    LinkNode *newNode = initLinkNode(flags);
-    LinkNode* node = *pNode;
-    while (node) {
-        if (pos == position) {
-            newNode->next = node->next;
-            node->next = newNode;
-            return 0;
-        }
-        pos++;
-        node = node->next;
-    }
-    return -1;
-}
 LinkNode* searchNode(LinkNode* pNode,int flags);
 int deleteNode(LinkNode** pNode,int flags);
 int destroyLinkNode(LinkNode** pNode) {
     LinkNode* node = (*pNode)->next;
+    free((void*)node->name);
+    node->name = NULL;
     free((*pNode));
     *pNode = NULL;
     while (node) {
@@ -71,8 +51,9 @@ void printNode(LinkNode* pNode) {
     LinkNode *node = pNode;
     
     while (node) {
-        printf("===  %d\n",node->flags);
+        printf("===  %s\n",node->name);
         node = node->next;
         
     }
 }
+

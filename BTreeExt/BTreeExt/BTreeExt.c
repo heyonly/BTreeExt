@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
  #include <assert.h>
+#include "LinkNode.h"
 
 static inline char* CopyStr(const char* str){
     char* tPath = malloc(sizeof(char) * strlen(str) + 1);
@@ -30,6 +31,8 @@ static BTNodeExt* BTreeExtLeafNode_Insert(BTNodeExt** pNode,TOptorBWItem* item);
 static int BTreeExt_Destroy_P(BTNodeExt **tree);
 
 static int BTreeExtLeafNode_Destroy(LeafNode** pNode);
+static int stictingPath(char* path,BTNodeExt* pNode);
+
 
 static const char* rootPath = NULL;
 BTNodeExt* BTreeExt_Init(const char* root,unsigned int flags) {
@@ -234,31 +237,57 @@ void printBTree(BTNodeExt* tree) {
     if (NULL == tree) {
         return;
     }
-    char *parrentPath = malloc(sizeof(char)* strlen(tree->parrent->item->name));
-    memset(parrentPath, 0, strlen(tree->parrent->item->name));
-    strcpy(parrentPath, tree->parrent->item->name);
     
     BTNodeExt *hNode = tree;
     while (hNode) {
-        unsigned long len= strlen(hNode->parrent->item->name) + strlen(hNode->item->name) + 2;
-        char *aPath = malloc(sizeof(char) * len);
-        memset((void*)aPath, 0, len);
-        strcpy(aPath, parrentPath);
-        strcat(aPath, "/");
-        strcat(aPath, hNode->item->name);
-        printf("%s\n",aPath);
+        char* tPath = malloc(sizeof(char) * 1024);
+        stictingPath(tPath, hNode);
+        printf("%s\n",tPath);
         printBTree(hNode->childNode);
         hNode = hNode->next;
-        free(aPath);
-        aPath = NULL;
-        
+        free(tPath);
+        tPath = NULL;
     }
-    free(parrentPath);
-    parrentPath = NULL;
+
     
    
 }
 
+static int stictingPath(char* path,BTNodeExt* pNode) {
+    if (NULL == pNode) {
+        return -1;
+    }
+    if (pNode == pNode->parrent) {
+        strcat(path, pNode->item->name);
+        return 0;
+    }
+    LinkNode* linkNode = initLinkNode(pNode->item->name);
+    
+    BTNodeExt *node = pNode->parrent;
+    while (node) {
+        
+        char *tPath = malloc(sizeof(char)* strlen(node->item->name) + 2);
+        memset((void*)tPath, 0, strlen(node->item->name) + 2);
+        strcat(tPath, node->item->name);
+        strcat(tPath, "/");
+        addNodeToHead(&linkNode, tPath);
+        
+        free(tPath);
+        tPath = NULL;
+        if (node == node->parrent) {
+            break;
+        }
+        
+        node = node->parrent;
+    }
+    memset(path, 0, strlen(path));
+    LinkNode *tNode = linkNode;
+    while (tNode) {
+        strcat(path, tNode->name);
+        tNode = tNode->next;
+    }
+    return 0;
+}
 static int BTreeExtLeafNode_Destroy(LeafNode** pNode) {
     if (NULL == pNode || NULL == *pNode) {
         return 0;

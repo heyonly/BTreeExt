@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		203EE1A71EB39A5700C49197 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 203EE1A61EB39A5700C49197 /* main.c */; };
 		203EE1AF1EB39AA800C49197 /* BTreeExt.c in Sources */ = {isa = PBXBuildFile; fileRef = 203EE1AD1EB39AA800C49197 /* BTreeExt.c */; };
-		204E2FD81EDC8126009C8B1B /* LinkTable.c in Sources */ = {isa = PBXBuildFile; fileRef = 204E2FD61EDC8126009C8B1B /* LinkTable.c */; };
+		204E2FD81EDC8126009C8B1B /* LinkNode.c in Sources */ = {isa = PBXBuildFile; fileRef = 204E2FD61EDC8126009C8B1B /* LinkNode.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,8 +29,8 @@
 		203EE1A61EB39A5700C49197 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		203EE1AD1EB39AA800C49197 /* BTreeExt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BTreeExt.c; sourceTree = "<group>"; };
 		203EE1AE1EB39AA800C49197 /* BTreeExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTreeExt.h; sourceTree = "<group>"; };
-		204E2FD61EDC8126009C8B1B /* LinkTable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LinkTable.c; sourceTree = "<group>"; };
-		204E2FD71EDC8126009C8B1B /* LinkTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkTable.h; sourceTree = "<group>"; };
+		204E2FD61EDC8126009C8B1B /* LinkNode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LinkNode.c; sourceTree = "<group>"; };
+		204E2FD71EDC8126009C8B1B /* LinkNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkNode.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,8 +66,8 @@
 				203EE1A61EB39A5700C49197 /* main.c */,
 				203EE1AD1EB39AA800C49197 /* BTreeExt.c */,
 				203EE1AE1EB39AA800C49197 /* BTreeExt.h */,
-				204E2FD61EDC8126009C8B1B /* LinkTable.c */,
-				204E2FD71EDC8126009C8B1B /* LinkTable.h */,
+				204E2FD61EDC8126009C8B1B /* LinkNode.c */,
+				204E2FD71EDC8126009C8B1B /* LinkNode.h */,
 			);
 			path = BTreeExt;
 			sourceTree = "<group>";
@@ -131,7 +131,7 @@
 			files = (
 				203EE1AF1EB39AA800C49197 /* BTreeExt.c in Sources */,
 				203EE1A71EB39A5700C49197 /* main.c in Sources */,
-				204E2FD81EDC8126009C8B1B /* LinkTable.c in Sources */,
+				204E2FD81EDC8126009C8B1B /* LinkNode.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

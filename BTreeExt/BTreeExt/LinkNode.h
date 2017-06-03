@@ -6,18 +6,17 @@
 //  Copyright © 2017 HeyOnly. All rights reserved.
 //
 
-#ifndef LinkTable_h
-#define LinkTable_h
+#ifndef LinkNode_h
+#define LinkNode_h
 
 #include <stdio.h>
 typedef struct _LinkNode {
-    int flags;
+    char* name;
     struct _LinkNode *next;
 }LinkNode;
 
-LinkNode* initLinkNode(int flags);
-int insertNode(LinkNode** pNode,int flags,int position);
-int addNodeToEnd(LinkNode** pNode,int flags);
+LinkNode* initLinkNode(const char* name);
+int addNodeToHead(LinkNode** pNode,const char* name);
 
 LinkNode* searchNode(LinkNode* pNode,int flags);
 int deleteNode(LinkNode** pNode,int flags);
