@@ -1,39 +1,53 @@
-this repository imitate linux file system directory tree
+前段时间，同事问怎么对目录中的文件快速过滤，想来想去，Linux的目录树是个不错的选择。但是同事想让我给他个demo，所以这个额文件目录搜索树就诞生了。还有很多不完善之处，就放上来，希望能有大牛给改一改。
+
+
+
 这是模仿文件系统多分支快速搜索树，对文件系统层级搜索
-## Welcome to GitHub Pages
+![image](BTreeExtPictire.png)
 
-You can use the [editor on GitHub](https://github.com/heyonly/BTreeExt/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+如图：
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+最上边是根目录，每一层平行节点之间是一个双向链表，当然，这个链表并没有进行任何排序。节点的定义如下：
+```
+typedef struct {
+    unsigned int flags; 
+    char name[256];
+} TOptorBWItem;
+```
+```
+typedef struct BTNodeExt {
+    TOptorBWItem* item;
+    struct BTNodeExt* parrent;
+    struct BTNodeExt* childNode;
+    struct BTNodeExt* next;
+    struct BTNodeExt* pre;
+}BTNodeExt;
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
+item 中存储了目录/文件
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/heyonly/BTreeExt/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+parrent 指向父目录
 
-### Support or Contact
+childNote 指向第一个子节点
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+next 平行目录中下一个节点
+
+pre 平行目录中上一个节点
+
+目录中主要是查找遍历，查找递归查找
+
+
+由于在每个节点中只存储了每个文件名。因此在遍历中采用递归算法，使用另一个链表来存储每个节点名存储到链表中，最后遍历链表将整个链表文件名拼接起来，输出。
+
+
+最后，直接看代码吧
+
+:[https://github.com/heyonly/BTreeExt](https://github.com/heyonly/BTreeExt)
+
+
+
+
+
